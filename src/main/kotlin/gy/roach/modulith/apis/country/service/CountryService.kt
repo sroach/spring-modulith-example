@@ -10,18 +10,22 @@ import java.io.InputStreamReader
 class CountryService {
     private val countries = mutableListOf<Country>()
     private var num: IntRange
+
     init {
         val parser = CSVParserBuilder()
             .withSeparator(',')
             .build()
-        val reader = CSVReaderBuilder(InputStreamReader(CountryService::class.java.classLoader.getResourceAsStream("countrydb/countries.csv")))
-            .withCSVParser(parser)
-            .build()
-        var lines: List<Array<String>> = ArrayList()
-        lines = reader.readAll()
-        reader.close()
-        lines.forEach {
-            countries.add(Country(it.get(0), it.get(1)))
+        val input = CountryService::class.java.classLoader.getResourceAsStream("countrydb/countries.csv")
+        input?.let {
+            val reader = CSVReaderBuilder(InputStreamReader(input))
+                .withCSVParser(parser)
+                .build()
+            var lines: List<Array<String>> = ArrayList()
+            lines = reader.readAll()
+            reader.close()
+            lines.forEach {
+                countries.add(Country(it.get(0), it.get(1)))
+            }
         }
         num = (0 until countries.size)
 

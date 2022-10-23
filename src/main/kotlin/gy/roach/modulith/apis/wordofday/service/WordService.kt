@@ -20,14 +20,17 @@ class WordService (@Autowired private val events: ApplicationEventPublisher,
         val parser = CSVParserBuilder()
             .withSeparator(',')
             .build()
-        val reader = CSVReaderBuilder(InputStreamReader(WordService::class.java.classLoader.getResourceAsStream("db/list.csv")))
-            .withCSVParser(parser)
-            .build()
-        var lines: List<Array<String>> = ArrayList()
-        lines = reader.readAll()
-        reader.close()
-        lines.forEach {
-            words.add(Word(it.get(0), it.get(1), it.get(2)))
+        val input = WordService::class.java.classLoader.getResourceAsStream("db/list.csv")
+        input?.let {
+            val reader = CSVReaderBuilder(InputStreamReader(input))
+                .withCSVParser(parser)
+                .build()
+            var lines: List<Array<String>> = ArrayList()
+            lines = reader.readAll()
+            reader.close()
+            lines.forEach {
+                words.add(Word(it.get(0), it.get(1), it.get(2)))
+            }
         }
         num = (0 until words.size)
 
